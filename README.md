@@ -1,9 +1,8 @@
-# 自动布局那些事
-Auto Layout是苹果在iOS 6中引进的新技术，这是一种基于约束系统的布局规则，它的出现颠覆了开发人员创建界面的方式，同时我们也发现在较新版本的Android Studio中，很多通过模板创建的应用程序也默认采用了constraint-layout。可见基于约束规则来创建界面的方式已经流行起来。
+Auto Layout是苹果在iOS 6中引进的新技术，这是一种基于约束系统的布局规则，它的出现颠覆了开发人员创建界面的方式，同时我们也发现在较新版本的Android Studio中，很多通过模板创建的应用程序也默认采用了constraint-layout，可见基于约束规则来创建移动软件界面的方式已经被大家普遍认可。
 
 ### Autoresizing系统
 
-- 说到Auto Layout，我们有必要先了解一下Autoresizing，所谓Autoresizing，就是当父视图的bounds发生变化时，会根据子视图设置的autoresizing mask自动调整子视图
+- 说到Auto Layout，我们有必要先了解一下Autoresizing，所谓Autoresizing，就是当父视图的bounds发生变化时，会根据子视图设置的autoresizing mask自动调整子视图。
 - 比如图1是tableView中的某两行，有一个处于右下角的控件
 
 ![图1](http://upload-images.jianshu.io/upload_images/10028500-0bd12a3c659e4a91.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310)
@@ -18,10 +17,10 @@ override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         let label = UILabel(frame: CGRect(x: contentViewWidth - lableWidth - margin, y: contentViewHeight - fontsize - margin, width: lableWidth, height: fontsize))
         label.autoresizingMask = [.flexibleLeftMargin, .flexibleTopMargin]
         contentView.addSubview(label)
-    }
+}
 ```
 
-* 如果没有使用Auto Layout，我们需要获取cell的宽度做一些简单的运算确定起始点的位置，为了进一步说明问题，我们在初始化方法中打印了contentView的宽高(320*44),很明显这个size并不正确，如果根据这个size去布局将会得到一个错误的位置。
+* 如果没有使用Auto Layout，我们需要获取cell的宽度做一些简单的运算确定起始点的位置，为了进一步说明问题，我们在初始化方法中打印了contentView的宽高(320*44)，很明显这个size并不正确，如果根据这个size去布局将会得到一个错误的位置。
 
 * 我们可能会这么做，定义一个全局的屏幕宽度，通过这个常量去计算确实可以保证在竖屏条件下的正确性，但是如果你的页面也出现在iPad中，而且iPad还支持旋转和分屏，那么你的布局依然还是错误的。
 * 我们还可能这么做，在以下方法中设置frame，当然这个方法中取到的父视图的大小是正确的。
@@ -33,10 +32,11 @@ override func layoutSubviews() {
 }
 ```
 
-* 另外一种方法是前面提到的Autoresizing，比如以上的代码中label.autoresizingMask = [.flexibleLeftMargin, .flexibleTopMargin]，表明该控件距离右边的距离保持不变，距离左边的距离跟随父视图变化，距离底部的距离保持不变，距离顶部的距离跟随父视图变化。所以当你使用了Autoresizing，你就可以不在乎cell创建时错误的初始值了，因为它会自动调整，甚至是横屏或者分屏，它都表现良好。
+* 另外一种方法是前面提到的Autoresizing，比如以上的代码中label.autoresizingMask = [.flexibleLeftMargin, .flexibleTopMargin]，表明该控件距离右边的距离保持不变，距离左边的距离跟随父视图变化，距离底部的距离保持不变，距离顶部的距离跟随父视图变化。所以当你使用了Autoresizing，你就可以不在乎cell创建时错误的初始值了，因为它会自动调整，就算是横屏或者分屏，它都表现良好。
 * 很明显对于以上的约束，涉及的加加减减虽然不至于太复杂，但也太过繁琐。
 
 * 尽管Auto Layout大有取代Autoresizing之意，但Autoresizing在某些情况下依然不失为一个好的方法，下面的代码用到了自适应的宽高来创建一个安全区域内全屏的tableView，不仅不受导航栏、tabBar影响，而且简洁、明了。
+
 ```swift
 let tableView = UITableView(frame: view.bounds, style: .plain)
 tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -46,11 +46,11 @@ tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 #### 场景
 
 * iPad上有一个广告轮播图(可以同时看到左中右三个广告，广告在滚动过程中宽度一直在变化，当滚动到中间时广告最大)，我们需要在右上角添加一个广告标签以提示用户。很明显，在这个场景里，如果你不选用Auto Layout或是Autoresizing，你很可能需要根据UIScrollViewDelegate的一些方法来实时的调整这个广告标签的位置。
-* 多个控件整体居中。不使用自动布局的情况下，你需要获取所有控件宽度的和。
+* 多个控件整体居中。不使用自动布局的情况下，你需要计算所有控件宽度的和。
 * iPad旋转、分屏适配。
 * iPhone X适配。
 
-类似的场景还有很多，如果不使用Auto Layout来布局，你可能需要一些看似不太复杂的计算，而这些计算往往可读性很差，而且很难适应各种屏幕。
+类似的场景还有很多，如果不使用Auto Layout来布局，你可能需要一些看似不太复杂的计算，而这些计算往往可读性很差，通常会定义若干个常量，而且很难适应各种屏幕。
 
 
 #### Auto Layout
@@ -59,29 +59,29 @@ tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
 * 使用自动布局，依然需要使用约束来定义视图的位置和大小，然而一些视图会根据所给内容拥有一个固有大小，比如UIKit里的UILabel，UIButton，UISwitch，UITextField，UIImageView等，此时我们可以免去宽高的约束。
 * 如果我们想让自定义的视图也拥有这个特性，我们可以在UIView的子类重写intrinsicContentSize，返回一个固有大小
-```
+```swift
 override var intrinsicContentSize: CGSize {
         return CGSize(width: 44, height: 44)
-    }
+}
 
 ```
 
 ##### UILayoutFittingCompressedSize
-```
+```swift
 @available(iOS 6.0, *)
 public let UILayoutFittingCompressedSize: CGSize
-@available(iOS 6.0, *)
-public let UILayoutFittingExpandedSize: CGSize
 ```
-以上的两个常量多在tableViewCell自动计算行高时看到，然而它也可以在普通的视图中使用，比如我们通过在自定义的view中添加约束，然后借助UILayoutFittingCompressedSize来实现多控件整体居中这么个需求。
-图2中**找回密码|紧急冻结|更多选项**整体居中
+* 这个常量多在tableViewCell自动计算行高时看到，然而它也可以在普通视图中使用，比如我们通过在自定义的view中添加约束，然后借助UILayoutFittingCompressedSize来实现多控件整体居中这么个需求。
+* 图2中**找回密码|紧急冻结|更多选项**整体居中。
+
 ![图2](http://upload-images.jianshu.io/upload_images/10028500-fd7520cec595130a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310)
 
 
 * 要完成图2这么一个需求，我们需要定义一个容器，这个容器的宽高根据内部控件的摆放规则自动计算。
-* 首先把要添加约束的控件设置translatesAutoresizingMaskIntoConstraints属性为false
+* 首先把要添加约束的控件设置translatesAutoresizingMaskIntoConstraints属性为false。
+
 > translatesAutoresizingMaskIntoConstraints : A Boolean value that determines whether the view’s autoresizing mask is translated into Auto Layout constraints.（是否要把autoresizing转成约束）
-```
+```swift
     //找回密码按钮
     findPwdButton.translatesAutoresizingMaskIntoConstraints = false
     //紧急冻结按钮
@@ -94,7 +94,7 @@ public let UILayoutFittingExpandedSize: CGSize
 ```
 
 * 我们选用VisualFormatLanguage的方式来实现以上的约束,它可以在一行代码中实现多个约束。
-```
+```swift
     let viewsDictionary = ["findPwdButton" : findPwdButton, "freezeButton" : freezeButton, "moreButton" : moreButton, "separatorLine1" : separatorLine1, "separatorLine2" : separatorLine2]
     let metric = ["separatorHeight" : 16]
     let constraints = [
@@ -120,7 +120,7 @@ public let UILayoutFittingExpandedSize: CGSize
 - **H:**表明这是一个关于水平方向的约束，这五个控件自左向右依次排开；
 
 - **|**表示父视图的边界，**[]**表示具体控件，而|[findPwdButton]则表明控件[findPwdButton]紧贴父视图的左边界(相当于|-0-[findPwdButton])；
-- **-**表示控件间的标准宽度，也可以使用在用具体的数字(比如-10-)来定义控件间的距离。
+- **-**表示控件间的标准宽度，也可以用具体的数字(比如-10-)来定义控件间的距离。
 - "V:|[separatorLine1(separatorHeight)]|"
 - **V:**表明这是一个关于竖直方向的约束,该方向只有一个控件。
 - 括号内的separatorHeight在metrics里定义，当然也可以直接在括号里面填写数字。
@@ -132,14 +132,14 @@ public let UILayoutFittingExpandedSize: CGSize
 
 最后我们选用了上述的intrinsicContentSize属性，同时返回UILayoutFittingCompressedSize，表明视图将根据容器内部的约束(距离上下左右四个方向的约束缺一不可)，选用一个最小的size来刚好包括这几个控件。
 
-```
+```swift
 override var intrinsicContentSize: CGSize {
         return UILayoutFittingCompressedSize
     }
 ```
 
 * 免去了宽高约束，我们很容易就可以让这个控件居中
-```
+```swift
 override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
@@ -164,21 +164,21 @@ override func viewWillLayoutSubviews() {
 ##### UINavigationBar的isTranslucent
 * iOS 7以后导航栏的isTranslucent属性默认为true，这个最明显的体会是导航栏有半透明的磨砂效果，可以隐约的看到有tableView从顶部穿过，这种方式一般是通过barTintColor的方式去设置的。
 * 另外一种则呈现为半透明不带磨砂的效果，这种方式则是通过BackgroundImage的方式去设置背景，如果你的图片是带alpha通道的，或者设置了isTranslucent为true,你都可以很明显的看到tableView穿透导航栏的效果。
-```
+```swift
 UINavigationBar.appearance().setBackgroundImage(image, for: .default)
 UINavigationBar.appearance().barTintColor = UIColor.white
 ```
-* 对于带系统导航栏的页面来讲，如果设置了navigationBar的isTranslucent为true，你的页面布局的起点就从屏幕顶部开始算起，如果设置为false则从导航栏底部开始算起
+* 对于带系统导航栏的页面来讲，如果设置了navigationBar的isTranslucent为true，你的页面布局的起点就从屏幕顶部开始算起，如果设置为false则从导航栏底部开始算起。
 
 * 当然如果你的controller添加了以下这行代码，意味的你的子控件将不自动延伸，你的布局起点就从导航栏底部开始算起。
-```
+```swift
 self.edgesForExtendedLayout = []
 ```
 
 * 这么说来，该怎么布局能不受导航栏的isTranslucent的影响呢？
 ![图3.png](http://upload-images.jianshu.io/upload_images/10028500-961e1a56bf39dd09.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310)
 
-```
+```swift
 override func viewDidLayoutSubviews() {
         topToolbar.translatesAutoresizingMaskIntoConstraints = false
         
@@ -255,7 +255,7 @@ override func viewDidLayoutSubviews() {
 - 代码中的bottomToolbar是UIToolbar的子类，仔细看iOS 11的约束我们会发现其实我们并没有让topToolbar紧贴屏幕底部，只是让其紧贴安全区域底部。然而事实是topToolbar自动延伸到底部了。
 - 注意：由于iOS 11以后，UIToolbar顶部覆盖一层_UIToolbarContentView会导致添加到UIToolbar的子控件无法响应事件，如果想利用以上自动延伸的特性的同时又能保证子控件可以正常响应事件的话可以如下处理。
 
-```
+```swift
 override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -274,7 +274,7 @@ override func layoutSubviews() {
 
 - 如果不修改约束，我们获得了图6的效果。现在我们尝试修改约束
 
-```
+```swift
 override func viewDidLayoutSubviews() {
         bottomToolbar.translatesAutoresizingMaskIntoConstraints = false
         
@@ -308,7 +308,7 @@ override func viewDidLayoutSubviews() {
 
 - 上图我们又看到了新的问题，就是底部控件居中的参照物似乎不对。我们需要在那一块不带圆角区域的区域居中，所以这就要求子控件要在安全区域内布局。
 
-```
+```swift
 override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -337,7 +337,7 @@ override func layoutSubviews() {
 - 上图中底部控件暂且称为TextInputToolbar，我们放了两个子视图textField和button，这两个都有intrinsicContentSize，会根据自身的内容(textField根据placeholder，button根据title)计算出自身的高度
 - 为了引入自动布局一个新的概念，我们并不打算给它们俩宽度，而是让它们俩自己算。
 - 根据前面的内容，我们写出如下代码
-```
+```swift
 override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -368,7 +368,7 @@ override func layoutSubviews() {
     }
 ```
 
-- 将TextInputToolbar在controller上布局后，我们发现了如下结果
+- 将TextInputToolbar在controller上布局后，我们发现了如下结果。
 
 ![图9.png](http://upload-images.jianshu.io/upload_images/10028500-fbee2953089c1767.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310)
 
@@ -378,16 +378,16 @@ override func layoutSubviews() {
 - 很明显除了方向相反以外，其他的似乎是我们要的
 #### 内容吸附
 
-> 内容吸附约束限制视图允许自身伸展和填充视图的程度。如果内容吸附优先级较高，则将视图的框架于内在内容相匹配。
+> 内容吸附约束限制视图允许自身伸展和填充视图的程度。如果内容吸附优先级较高，则将视图的框架与内在内容相匹配。
 - 内容吸附优先级默认为UILayoutPriorityDefaultLow(250)，而且会优先满足左边。
 - 回到图9的状态，我们尝试降低一下textField内容吸附的优先级，我们设置一个具体的值249
 
-```
+```swift
 textField.setContentHuggingPriority(UILayoutPriority(rawValue: 249), for: .horizontal)
 ```
 - 我们得到了图8正确的布局，当然除了让左边控件内容吸附优先级降低外，我们也可以尝试让右边控件内容吸附优先级升高，比如
 
-```
+```swift
 button.setContentHuggingPriority(UILayoutPriority(rawValue: 251), for: .horizontal)
 ```
 
@@ -400,24 +400,24 @@ button.setContentHuggingPriority(UILayoutPriority(rawValue: 251), for: .horizont
 
 - 类似于内容吸附优先级的做法，我们尝试提高右边控件的压缩阻力优先级
 
-```
+```swift
 button.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 751), for: .horizontal)
 ```
 
 - 至此我们完成了输入框自身的布局，接下来我们来看与键盘的交互
 - 首先我们先添加监听键盘的一些方法
-```
+```swift
 NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: .UIKeyboardWillShow, object: nil)
 NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: .UIKeyboardWillHide, object: nil)
 ```
 - 我们把约束设置为当前controller的属性
 
-```
+```swift
 var hideConstraint: NSLayoutConstraint?
 var showConstraint: NSLayoutConstraint?
 ```
 
-```
+```swift
 //键盘消失时底部贴紧安全区域底部
 hideConstraint = textInputBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
 hideConstraint?.isActive = true
@@ -428,7 +428,7 @@ showConstraint?.isActive = false
 ```
 
 - 由于键盘的高度从屏幕底部起算，我们添加的底部也是参照屏幕底部做计算
-```
+```swift
     @objc func keyboardWillShow(_ notification: NSNotification) {
         let userInfo = notification.userInfo
         
@@ -469,8 +469,8 @@ showConstraint?.isActive = false
 ```
 
 - 我们通过切换两个约束同时改变常量的方式来实现这个动画
-- constant是NSLayoutConstraint的属性，通过修改constant的值可以调整一些距离，最后类似于frame的动画，我们只要调用父视图layoutIfNeeded()系统便会帮我们完成动画
-- 最后，我们将得到下图的效果
+- constant是NSLayoutConstraint的属性，通过修改constant的值可以调整一些距离，最后类似于frame的动画，我们只要调用父视图layoutIfNeeded()系统便会帮我们完成动画。
+- 最后，我们得到下图的效果
 
 ![图12.png](http://upload-images.jianshu.io/upload_images/10028500-94cef69ec77f46fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310)
 
@@ -478,11 +478,11 @@ showConstraint?.isActive = false
 - iOS 9不仅带来了更加简洁的Anchor布局，也带来了UIStackView，这大大方便了我们在垂直或水平方向布局多个子视图，有点类似于Android的线性布局。尽管UIStackView是UIView的一个子类，但它仅作为容器使用，并不会被渲染。
 - 下面我们将利用UIStackView来实现一个简易的tabBar
 
-![图13.png](http://upload-images.jianshu.io/upload_images/10028500-aea8ab09cf65517f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310)
+![图13.png](http://upload-images.jianshu.io/upload_images/10028500-aea8ab09cf65517f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200)
 
 - 对于tabBar的每个item其实是前面提到的多控件居中，只不过这次为竖直方向的居中，在此不再赘述。
 
-```
+```swift
 lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -499,24 +499,12 @@ lazy var stackView: UIStackView = {
 - spacing：间距
 
 - 在看子视图的添加(addArrangedSubview)，我们并不需要为这几个子控件添加约束，一切都是UIStackView帮我们实现的。
-```
+```swift
 for _ in 1...5 {
             let bottomTabBarItemView = BottomTabBarItemView()
             stackView.addArrangedSubview(bottomTabBarItemView)
-        }
+}
 ```
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
