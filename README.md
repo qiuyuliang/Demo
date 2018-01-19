@@ -1,3 +1,5 @@
+# 自动布局那些事
+
 Auto Layout是苹果在iOS 6中引进的新技术，这是一种基于约束系统的布局规则，它的出现颠覆了开发人员创建界面的方式，同时我们也发现在较新版本的Android Studio中，很多通过模板创建的应用程序也默认采用了constraint-layout，可见基于约束规则来创建移动软件界面的方式已经被大家普遍认可。
 
 ### Autoresizing系统
@@ -176,6 +178,8 @@ self.edgesForExtendedLayout = []
 ```
 
 * 这么说来，该怎么布局能不受导航栏的isTranslucent的影响呢？
+
+
 ![图3.png](http://upload-images.jianshu.io/upload_images/10028500-961e1a56bf39dd09.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310)
 
 ```swift
@@ -213,8 +217,10 @@ override func viewDidLayoutSubviews() {
 - 没错就是topLayoutGuide,在以上的例子中你可以把它当作是导航栏，当然在iOS 11你还可以使用safeAreaLayoutGuide，尽管这两个属性并非UIView子类，但使用起来与UI控件很像。
 
 #### safeAreaLayoutGuide
-相信前面的内容已经让你对安全区域有了一定的了解,接下来我们来介绍它
+相信前面的内容已经让你对安全区域有了一定的了解,接下来我们来介绍它。
+
 ![图4.png](http://upload-images.jianshu.io/upload_images/10028500-875a079a8934bdea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310)
+
 * 从上图可以看出扣除刘海、圆角等区域剩下的即为安全区域(图4中青色矩形区域)，如果你的页面还有导航栏、tabBar，安全区域将进一步缩小，由于非安全区域会影响控件的交互，所以适配iPhone X要做的事情就是调整控件的位置，让其处在安全区域内，尽管tableView、collectionView可以在非安全区域活动，但我们总可以通过滚动让其静止在安全区域内。
 
 #### iPhone X底部控件适配
@@ -478,7 +484,7 @@ showConstraint?.isActive = false
 - iOS 9不仅带来了更加简洁的Anchor布局，也带来了UIStackView，这大大方便了我们在垂直或水平方向布局多个子视图，有点类似于Android的线性布局。尽管UIStackView是UIView的一个子类，但它仅作为容器使用，并不会被渲染。
 - 下面我们将利用UIStackView来实现一个简易的tabBar
 
-![图13.png](http://upload-images.jianshu.io/upload_images/10028500-aea8ab09cf65517f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/200)
+![图13.png](http://upload-images.jianshu.io/upload_images/10028500-aea8ab09cf65517f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310)
 
 - 对于tabBar的每个item其实是前面提到的多控件居中，只不过这次为竖直方向的居中，在此不再赘述。
 
